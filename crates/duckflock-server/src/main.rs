@@ -19,11 +19,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Initialize tracing
     tracing_subscriber::fmt()
-        .with_env_filter(
-            cli.log_level
-                .as_deref()
-                .unwrap_or("info")
-        )
+        .with_env_filter(cli.log_level.as_deref().unwrap_or("info"))
         .init();
 
     tracing::info!(
@@ -46,7 +42,11 @@ async fn main() -> anyhow::Result<()> {
     // TODO: Initialize gateway (DF-3)
     // TODO: Start serving
 
-    tracing::info!("DuckFlock ready — listening on {}:{}", config.listen.host, config.listen.port);
+    tracing::info!(
+        "DuckFlock ready — listening on {}:{}",
+        config.listen.host,
+        config.listen.port
+    );
 
     // Keep running until signal
     tokio::signal::ctrl_c().await?;

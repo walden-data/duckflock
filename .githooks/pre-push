@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ============================================================
+# Pre-push hook: block pushes to main, run clippy + tests
+# ============================================================
+
+# --- Block pushes to main ---
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+REMOTE_REF=""
+
+while read -r local_ref local_oid remote_ref remote_oid; do
+    REMOTE_REF="$remote_ref"
+done
+
+if [ "$BRANCH" = "main" ] || echo "$REMOTE_REF" | grep -q "refs/heads/main"; then
+    echo "❌ Pushing directly to main is not allowed."
+    echo "   Create a PR instead."
+    exit 1
+fi
+
+# --- Detect changed crates ---
+# Compare against the merge base with main to find what changed
+MERGE_BASE=$(git merge-base HEAD origin/main 2>/dev/null || echo "HEAD~1")
+CHANGED_FILES=$(git diff --name-only "$MERGE_BASE"..HEAD 2>/dev/null || git diff --name-only HEAD~1..HEAD)
+
+changed_crates=()
+if echo "$CHANGED_FILES" | grep -q "crates/duckflock-core/"; then
+    changed_crates+=("-p" "duckflock-core")
+fi
+if echo "$CHANGED_FILES" | grep -q "crates/duckflock-engine/"; then
+    changed_crates+=("-p" "duckflock-engine")
+fi
+if echo "$CHANGED_FILES" | grep -q "crates/duckflock-gateway/"; then
+    changed_crates+=("-p" "duckflock-gateway")
+fi
+if echo "$CHANGED_FILES" | grep -q "crates/duckflock-server/"; then
+    changed_crates+=("-p" "duckflock")
+fi
+
+# If workspace root Cargo.toml changed, check everything
+if echo "$CHANGED_FILES" | grep -q "^Cargo.toml$"; then
+    changed_crates=("--workspace")
+fi
+
+# Nothing to check
+if [ ${#changed_crates[@]} -eq 0 ]; then
+    echo "✅ No Rust source changes — skipping checks"
+    exit 0
+fi
+
+echo "📦 Changed crates: ${changed_crates[*]}"
+
+# --- Clippy (warnings as errors) ---
+echo "🔍 Running clippy..."
+if ! cargo clippy "${changed_crates[@]}" -- -D warnings 2>&1; then
+    echo "❌ Clippy found issues. Fix them before pushing."
+    exit 1
+fi
+echo "✅ Clippy OK"
+
+# --- Tests ---
+echo "🧪 Running tests..."
+if ! cargo test "${changed_crates[@]}" 2>&1; then
+    echo "❌ Tests failed. Fix them before pushing."
+    exit 1
+fi
+echo "✅ Tests OK"
+
+echo ""
+echo "✅ All checks passed — pushing"
