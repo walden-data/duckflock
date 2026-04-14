@@ -70,6 +70,6 @@ chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 
 # Internal crates
-duckflock-core = { path = "crates/duckflock-core" }
-duckflock-engine = { path = "crates/duckflock-engine" }
-duckflock-gateway = { path = "crates/duckflock-gateway" }
+duckflock-core = { version = "0.1.0", path = "crates/duckflock-core" }
+duckflock-engine = { version = "0.1.0", path = "crates/duckflock-engine" }
+duckflock-gateway = { version = "0.1.0", path = "crates/duckflock-gateway" }
