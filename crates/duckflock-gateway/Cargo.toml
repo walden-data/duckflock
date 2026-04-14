@@ -1,0 +1,22 @@
+[package]
+name = "duckflock-gateway"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "PostgreSQL wire protocol gateway for DuckFlock"
+
+[dependencies]
+duckflock-core.workspace = true
+duckflock-engine.workspace = true
+anyhow.workspace = true
+async-trait.workspace = true
+pgwire.workspace = true
+prometheus.workspace = true
+prost.workspace = true
+tokio.workspace = true
+tonic.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }

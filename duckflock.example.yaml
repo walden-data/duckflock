@@ -1,0 +1,66 @@
+# DuckFlock Configuration
+# =======================
+# Copy this file to duckflock.yaml and adjust for your environment.
+
+# --- Listener ---
+# The PostgreSQL-compatible endpoint that clients connect to.
+listen:
+  host: 0.0.0.0
+  port: 5433
+  # tls:
+  #   cert: /path/to/cert.pem
+  #   key: /path/to/key.pem
+
+# --- Metadata Store ---
+# PostgreSQL database used by DuckLake to store catalog metadata.
+metadata:
+  connection: postgres://localhost:5432/metadata_store
+
+# --- Object Storage ---
+# Where DuckLake stores Parquet data files.
+storage:
+  type: s3                              # s3 | local
+  # endpoint: http://localhost:4566     # For LocalStack / MinIO
+  # region: us-east-1
+
+# --- Catalogs ---
+# DuckLake catalogs to attach on startup. Each catalog uses a separate
+# PostgreSQL schema for metadata and a separate S3 prefix for data.
+catalogs:
+  bronze:
+    metadata_schema: bronze_meta
+    data_path: s3://my-lake/bronze/
+    read_only: false
+    auto_migrate: false                 # Opt-in to DuckLake version migration
+  silver:
+    metadata_schema: silver_meta
+    data_path: s3://my-lake/silver/
+    read_only: true
+
+# --- Compute ---
+# Resource limits and isolation model.
+compute:
+  isolation: connection                 # connection | process
+  max_sessions: 20
+  memory_per_session: 4GB
+  idle_timeout: 5m
+
+# --- Authentication ---
+# How clients authenticate to DuckFlock.
+auth:
+  method: trust                         # trust | scram-sha-256
+  # users:                              # Required for scram-sha-256
+  #   - username: analyst
+  #     password_hash: "SCRAM-SHA-256$4096:..."
+
+# --- Logging ---
+logging:
+  level: info                           # trace | debug | info | warn | error
+  audit: none                           # none | stdout | file
+  # audit_file: /var/log/duckflock/audit.jsonl
+
+# --- Metrics ---
+# Prometheus metrics endpoint.
+metrics:
+  enabled: true
+  port: 9090
