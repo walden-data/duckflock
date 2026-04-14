@@ -1,10 +1,10 @@
 [package]
-name = "duckflock-server"
+name = "duckflock"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "DuckFlock server binary"
+description = "A persistent PostgreSQL-compatible endpoint for DuckLake"
 
 [[bin]]
 name = "duckflock"

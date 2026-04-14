@@ -3,7 +3,7 @@ members = [
     "crates/duckflock-core",
     "crates/duckflock-engine",
     "crates/duckflock-gateway",
-    "crates/duckflock-server",
+    "crates/duckflock-server",  # binary crate, publishes as "duckflock"
 ]
 resolver = "2"
 
