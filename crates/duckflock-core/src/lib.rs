@@ -7,8 +7,8 @@
 //!
 //! It also contains the configuration schema for `duckflock.yaml`.
 
-pub mod auth;
 pub mod audit;
+pub mod auth;
 pub mod catalog;
 pub mod config;
 pub mod error;

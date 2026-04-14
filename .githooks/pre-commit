@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ============================================================
+# Pre-commit hook: block commits to main, run format check
+# ============================================================
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$BRANCH" = "main" ]; then
+    echo "❌ Direct commits to main are not allowed."
+    echo "   Create a feature branch: git switch -c my-feature"
+    exit 1
+fi
+
+# --- Format check (fast, always run) ---
+echo "🔍 Checking formatting..."
+if ! cargo fmt --check --quiet 2>/dev/null; then
+    echo "❌ Formatting issues found. Run: cargo fmt"
+    exit 1
+fi
+echo "✅ Format OK"

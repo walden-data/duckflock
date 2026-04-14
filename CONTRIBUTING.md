@@ -10,11 +10,21 @@ Thanks for your interest in contributing to DuckFlock!
 - PostgreSQL 16+
 - protobuf compiler (`brew install protobuf` on macOS)
 
-### Build
+### Setup
 
 ```bash
 git clone https://github.com/walden-data/duckflock.git
 cd duckflock
+./scripts/setup.sh   # installs git hooks, verifies toolchain
+```
+
+This configures git hooks that:
+- **Pre-commit**: blocks direct commits to `main`, checks formatting
+- **Pre-push**: blocks direct pushes to `main`, runs clippy + tests on changed crates
+
+### Build
+
+```bash
 cargo build
 ```
 
