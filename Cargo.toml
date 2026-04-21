@@ -21,10 +21,10 @@ rust-version = "1.84"
 duckdb = { version = "1.5", features = ["bundled"] }
 
 # Arrow / IPC
-arrow = "57"
-arrow-array = "57"
-arrow-ipc = "57"
-arrow-schema = "57"
+arrow = "58"
+arrow-array = "58"
+arrow-ipc = "58"
+arrow-schema = "58"
 
 # gRPC
 tonic = "0.12"
@@ -59,6 +59,7 @@ clap = { version = "4.5", features = ["derive"] }
 # Error handling
 anyhow = "1"
 thiserror = "2"
+regex = "1"
 
 # Async traits
 async-trait = "0.1"

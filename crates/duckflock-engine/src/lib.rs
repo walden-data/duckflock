@@ -1,12 +1,20 @@
-//! DuckFlock Engine — DuckDB execution and gRPC service.
+//! DuckFlock Engine — DuckDB connection pool and query execution.
 //!
-//! This crate manages DuckDB connection pools, query execution,
-//! DuckLake catalog attachment, and the gRPC server that the
-//! gateway communicates with.
+//! This crate provides:
+//! - [`Engine`] — the main entry point for query execution
+//! - [`EngineConfig`] — configuration for the engine
+//! - [`EngineError`] — typed error handling
+//! - [`QueryResult`] — query execution results with Arrow RecordBatches
 
-pub mod placeholder {
-    /// Placeholder — engine implementation coming in DF-9.
-    pub fn engine_version() -> &'static str {
-        env!("CARGO_PKG_VERSION")
-    }
-}
+pub mod catalog;
+pub mod config;
+pub mod engine;
+pub mod error;
+pub mod execute;
+pub mod pool;
+
+pub use catalog::FileCatalogSource;
+pub use config::EngineConfig;
+pub use engine::Engine;
+pub use error::EngineError;
+pub use execute::QueryResult;
